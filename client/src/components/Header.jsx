@@ -1,126 +1,127 @@
-import { FaSearch } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Search, UserCircle, Menu } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-
+import { motion } from "framer-motion";
 
 export default function Header() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate()
+  const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Handle transparent to solid background on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search)
-    urlParams.set('searchTerm', searchTerm)
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
     const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`)
-  }
+    navigate(`/search?${searchQuery}`);
+  };
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search)
-    const searchTermFromUrl = urlParams.get('searchTerm');
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
     if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl)
+      setSearchTerm(searchTermFromUrl);
     }
-  }, [location.search])
+  }, [location.search]);
+
+  // If we are on the home page and not scrolled, background should be transparent.
+  const isHome = location.pathname === "/";
+  const navClass = isHome && !isScrolled
+    ? "bg-black/20 backdrop-blur-md border border-white/10"
+    : "bg-white/90 backdrop-blur-2xl border border-slate-200/60 shadow-xl shadow-slate-200/20";
+
+  const textColor = isHome && !isScrolled ? "text-white" : "text-slate-800";
+  const searchBg = isHome && !isScrolled ? "bg-white/10 hover:bg-white/20" : "bg-slate-100 hover:bg-slate-200/80";
+  const placeholderColor = isHome && !isScrolled ? "placeholder-white/70" : "placeholder-slate-400";
+  const searchTextColor = isHome && !isScrolled ? "text-white" : "text-slate-800";
+  const iconColor = isHome && !isScrolled ? "text-white/80" : "text-slate-400";
 
   return (
-    <header className="bg-slate-200 shadow-md">
-      <div className="flex justify-between items-center max-w-6xl m-auto p-3">
-        <Link to={"/"}>
-          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-            <span className="text-slate-500">Sujal</span>
-            <span className="text-slate-700">Estate</span>
+    <motion.header
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="fixed w-full top-4 sm:top-6 z-50 flex justify-center px-4 pointer-events-none"
+    >
+      <div className={`pointer-events-auto flex justify-between items-center w-full max-w-5xl rounded-full px-5 py-3 sm:px-8 sm:py-4 transition-all duration-500 ${navClass}`}>
+        <Link to={"/"} className="flex items-center gap-2 group">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-md group-hover:rotate-12 transition-transform duration-300">
+            <span className="text-white font-bold text-lg leading-none tracking-tighter">A</span>
+          </div>
+          <h1 className={`font-extrabold text-xl sm:text-2xl tracking-tight hidden sm:flex items-center ${textColor}`}>
+            Aura<span className="font-light ml-1 opacity-80">Properties</span>
           </h1>
         </Link>
 
-        <form onSubmit={handleSubmit} className="bg-slate-100 p-3 rounded-lg items-center flex">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent focus:outline-none w-24 sm:w-64 "
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button>
-            <FaSearch className="text-slate-600" />
-          </button>
-        </form>
-        <ul className="flex gap-4">
-          <Link to={"/"}>
-            <li className="hidden sm:inline text-slate-700 hover:underline">
-              Home
+        {/* Search Bar - Hidden on mobile */}
+        <div className="hidden lg:block flex-1 max-w-md mx-8">
+          <form
+            onSubmit={handleSubmit}
+            className={`${searchBg} transition-all duration-300 px-5 py-2.5 rounded-full items-center flex border border-transparent focus-within:border-emerald-500/30 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:bg-white`}
+          >
+            <Search className={`w-4 h-4 mr-2 ${iconColor}`} />
+            <input
+              type="text"
+              placeholder="Search premium locations..."
+              className={`bg-transparent focus:outline-none w-full text-sm font-medium ${searchTextColor} ${placeholderColor}`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </form>
+        </div>
+
+        <nav className="flex items-center gap-6 sm:gap-8">
+          <ul className={`hidden md:flex gap-8 items-center text-sm font-bold tracking-wide ${textColor}`}>
+            <li>
+              <Link to={"/"} className="hover:text-emerald-500 transition-colors opacity-90 hover:opacity-100">
+                Portfolio
+              </Link>
             </li>
-          </Link>
-          <Link to={"/about"}>
-            <li className="hidden sm:inline text-slate-700 hover:underline">
-              About
+            <li>
+              <Link to={"/about"} className="hover:text-emerald-500 transition-colors opacity-90 hover:opacity-100">
+                About Us
+              </Link>
             </li>
-          </Link>
-          <Link to={"/profile"}>
-            {currentUser ? (
-              <img
-                src={currentUser.avatar || "default-avatar.png"}
-                className="h-7 w-7 rounded-full object-cover"
-              />
-            ) : (
-              <li className="sm:inline text-slate-700 hover:underline">
-                Sign in
-              </li>
-            )}
-          </Link>
-        </ul>
+          </ul>
+
+          <div className="flex items-center gap-4">
+            <Link to={"/profile"}>
+              {currentUser ? (
+                <img
+                  src={currentUser.avatar || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                  className="h-10 w-10 sm:h-11 sm:w-11 rounded-full object-cover border-2 border-emerald-500 shadow-md hover:ring-4 ring-emerald-500/30 transition-all duration-300"
+                  alt="User"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+                  }}
+                />
+              ) : (
+                <div className={`flex items-center gap-2 hover:text-emerald-500 transition-colors font-semibold text-sm ${textColor}`}>
+                  <UserCircle className="w-6 h-6 sm:w-7 sm:h-7" />
+                  <span className="hidden sm:inline">Sign In</span>
+                </div>
+              )}
+            </Link>
+
+            <button className={`md:hidden p-2 rounded-full hover:bg-white/10 transition-colors ${textColor}`}>
+              <Menu className="w-6 h-6" />
+            </button>
+          </div>
+        </nav>
       </div>
-    </header>
+    </motion.header>
   );
 }
-
-// import { FaSearch } from "react-icons/fa";
-// import { Link } from "react-router-dom";
-// import { useSelector } from "react-redux";
-
-// export default function Header() {
-//   const { currentUser } = useSelector((state) => state.user);
-
-//   return (
-//     <header className="bg-slate-200 shadow-md">
-//       <div className="flex justify-between items-center max-w-6xl m-auto p-3">
-//         <Link to={"/"}>
-//           <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-//             <span className="text-slate-500">Sujal</span>
-//             <span className="text-slate-700">Estate</span>
-//           </h1>
-//         </Link>
-
-//         <form className="bg-slate-100 p-3 rounded-lg items-center flex">
-//           <input
-//             type="text"
-//             placeholder="Search..."
-//             className="bg-transparent focus:outline-none w-24 sm:w-64"
-//           />
-//           <FaSearch className="text-slate-600" />
-//         </form>
-
-//         <ul className="flex gap-4">
-//           <Link to={"/"} className="hidden sm:inline">
-//             <li className="text-slate-700 hover:underline">Home</li>
-//           </Link>
-//           <Link to={"/about"} className="hidden sm:inline">
-//             <li className="text-slate-700 hover:underline">About</li>
-//           </Link>
-//           {currentUser ? (
-//             <img
-//               src={currentUser.avatar || "default-avatar.png"} // Provide a default avatar image if currentUser.avatar is not available
-//               alt="profile"
-//               className="h-8 w-8 rounded-full"
-//             />
-//           ) : (
-//             <Link to={"/sign-in"}>
-//               <li className="sm:inline text-slate-700 hover:underline">Sign in</li>
-//             </Link>
-//           )}
-//         </ul>
-//       </div>
-//     </header>
-//   );
-// }

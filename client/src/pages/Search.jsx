@@ -14,7 +14,7 @@ export default function Search() {
     parking: false,
     furnished: false,
     offer: false,
-    sort: "created_at",
+    sort: "createdAt",
     order: "desc",
   });
 
@@ -45,7 +45,7 @@ export default function Search() {
         parking: parkingFromUrl === "true" ? true : false,
         furnished: furnishedFromUrl === "true" ? true : false,
         offer: offerFromUrl === "true" ? true : false,
-        sort: sortFromUrl || "created_at",
+        sort: sortFromUrl || "createdAt",
         order: orderFromUrl || "desc",
       });
     }
@@ -95,7 +95,7 @@ export default function Search() {
     }
 
     if (e.target.id === "sort_order") {
-      const sort = e.target.value.split("_")[0] || "created_at";
+      const sort = e.target.value.split("_")[0] || "createdAt";
 
       const order = e.target.value.split("_")[1] || "desc";
 
@@ -132,131 +132,144 @@ export default function Search() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row">
-      <div className="p-7 border-b-2 sm:border-r-2 md:min-h-screen">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          <div className="flex items-center gap-2 ">
-            <label className="whitespace-nowrap font-semibold">
+    <div className="min-h-screen pt-24 px-4 max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
+      {/* Sidebar Filter - Glass Panel */}
+      <div className="glass-panel p-6 md:w-80 h-fit md:sticky top-28 shadow-xl border-slate-200/50">
+        <h2 className="text-xl font-bold text-slate-700 mb-6 pb-2 border-b border-slate-200/60">Filter Properties</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
               Search Term
             </label>
             <input
               type="text"
               id="searchTerm"
-              placeholder="Search..."
-              className="border rounded-lg p-3 w-full"
+              placeholder="E.g. Vintage Villa..."
+              className="input-premium focus:ring-1"
               onChange={handleChange}
               value={sidebarData.searchTerm}
             />
           </div>
-          <div className="flex gap-2 flex-wrap items-center">
-            <label className="font-semibold">Type:</label>
 
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="all"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebarData.type === "all"}
-              />
-              <span>Rent & Sale</span>
-            </div>
+          <div className="space-y-4">
+            <label className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Property Type</label>
+            <div className="flex flex-col gap-3">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  id="all"
+                  className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-colors cursor-pointer"
+                  onChange={handleChange}
+                  checked={sidebarData.type === "all"}
+                />
+                <span className="text-slate-600 group-hover:text-emerald-700 font-medium">Rent & Sale</span>
+              </label>
 
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="rent"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebarData.type === "rent"}
-              />
-              <span>Rent</span>
-            </div>
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  id="rent"
+                  className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-colors cursor-pointer"
+                  onChange={handleChange}
+                  checked={sidebarData.type === "rent"}
+                />
+                <span className="text-slate-600 group-hover:text-emerald-700 font-medium">For Rent</span>
+              </label>
 
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="sale"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebarData.type === "sale"}
-              />
-              <span>Sale</span>
-            </div>
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  id="sale"
+                  className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-colors cursor-pointer"
+                  onChange={handleChange}
+                  checked={sidebarData.type === "sale"}
+                />
+                <span className="text-slate-600 group-hover:text-emerald-700 font-medium">For Sale</span>
+              </label>
 
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="offer"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebarData.offer}
-              />
-              <span>Offer</span>
-            </div>
-          </div>
-
-          <div className="flex gap-2 flex-wrap items-center">
-            <label className="font-semibold">Aninities:</label>
-
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="parking"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebarData.parking}
-              />
-              <span>Parking Lot</span>
-            </div>
-
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="furnished"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebarData.furnished}
-              />
-              <span>Furnished</span>
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  id="offer"
+                  className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-colors cursor-pointer"
+                  onChange={handleChange}
+                  checked={sidebarData.offer}
+                />
+                <span className="text-slate-600 group-hover:text-emerald-700 font-medium">Special Offers</span>
+              </label>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="font-semibold">Sort:</label>
+          <div className="space-y-4">
+            <label className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Amenities</label>
+            <div className="flex flex-col gap-3">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  id="parking"
+                  className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-colors cursor-pointer"
+                  onChange={handleChange}
+                  checked={sidebarData.parking}
+                />
+                <span className="text-slate-600 group-hover:text-emerald-700 font-medium">Parking Lot</span>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  id="furnished"
+                  className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 transition-colors cursor-pointer"
+                  onChange={handleChange}
+                  checked={sidebarData.furnished}
+                />
+                <span className="text-slate-600 group-hover:text-emerald-700 font-medium">Furnished</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Sort By</label>
             <select
-              className="border rounded-lg p-3"
+              className="input-premium py-2.5 cursor-pointer appearance-none"
               name="sort_order"
               id="sort_order"
               onChange={handleChange}
-              defaultValue={"created_at_desc"}
-              // disabled="disabled"
+              value={`${sidebarData.sort}_${sidebarData.order}`}
             >
-              <option value="regularPrice_desc">Price high to low</option>
-              <option value="regularPrice_asc">Price low to high</option>
-              <option value="createdAt_desc">Latest</option>
-              <option value="createdAt_asc">Oldest</option>
+              <option value="regularPrice_desc">Price: High to Low</option>
+              <option value="regularPrice_asc">Price: Low to High</option>
+              <option value="createdAt_desc">Latest Additions</option>
+              <option value="createdAt_asc">Oldest First</option>
             </select>
           </div>
 
-          <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-90">
-            Search
+          <button className="business-btn-primary mt-4 py-3.5 tracking-wider w-full">
+            Apply Filters
           </button>
         </form>
       </div>
 
-      <div className="flex-1">
-        <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
-          Listing results:
-        </h1>
-        <div className="p-7 flex flex-wrap gap-4">
+      {/* Main Content Area */}
+      <div className="flex-1 pb-10">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
+            Curated <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">Listings</span>
+          </h1>
+          <div className="h-1 flex-1 bg-gradient-to-r from-emerald-500/20 to-transparent ml-4 rounded-full"></div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
           {!loading && listings.length === 0 && (
-            <p className="text-xl text-slate-700">No listing found!</p>
+            <div className="col-span-full py-20 text-center glass-panel">
+              <p className="text-xl text-slate-500 font-medium">No properties match your exact criteria.</p>
+              <p className="text-slate-400 mt-2">Try adjusting your filters to discover more homes.</p>
+            </div>
           )}
+
           {loading && (
-            <p className="text-xl text-slate-700 text-center w-full">
+            <div className="col-span-full py-20 flex justify-center">
               <Spinner />
-            </p>
+            </div>
           )}
 
           {!loading &&
@@ -265,13 +278,14 @@ export default function Search() {
               <ListingItem key={listing._id} listing={listing} />
             ))}
         </div>
+
         {showMore && (
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-12">
             <button
               onClick={onShowMoreClick}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out mb-4"
+              className="bg-white border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 font-bold py-3 px-8 rounded-full shadow-sm hover:shadow-md transition-all duration-300"
             >
-              Show more
+              Load More Properties
             </button>
           </div>
         )}
