@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDownloadURL,
@@ -129,13 +130,13 @@ export default function Profile() {
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
       });
-  
+
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
-  
+
       dispatch(deleteUserSuccess(data));
       setSuccessMessage("User has been deleted successfully!");
       setTimeout(() => {
@@ -145,7 +146,7 @@ export default function Profile() {
       dispatch(deleteUserFailure(error.message));
     }
   };
-  
+
 
   const handleSignOut = async () => {
     try {
@@ -213,7 +214,7 @@ export default function Profile() {
         console.log(data.message);
         return;
       }
-  
+
       setUserListings((prev) =>
         prev.filter((listing) => listing._id !== listingId)
       );
@@ -225,147 +226,197 @@ export default function Profile() {
       console.log(error.message);
     }
   };
-  
+
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
+    <div className="min-h-screen bg-gray-50/50 py-12 px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-2xl mx-auto space-y-8"
+      >
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Your Profile</h1>
+          <p className="mt-2 text-sm text-gray-600">Manage your account settings and listings</p>
+        </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          onChange={(e) => setFile(e.target.files[0])}
-          type="file"
-          ref={fileRef}
-          hidden
-          accept="image/*"
-        />
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-8">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <div className="flex flex-col items-center">
+                <div className="relative group cursor-pointer">
+                  <input
+                    onChange={(e) => setFile(e.target.files[0])}
+                    type="file"
+                    ref={fileRef}
+                    hidden
+                    accept="image/*"
+                  />
+                  <img
+                    onClick={() => fileRef.current.click()}
+                    src={formData.avatar || currentUser.avatar}
+                    alt="profile"
+                    className="rounded-full h-32 w-32 object-cover border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div
+                    onClick={() => fileRef.current.click()}
+                    className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  >
+                    <span className="text-white text-sm font-medium">Change</span>
+                  </div>
+                </div>
 
-        <img
-          onClick={() => fileRef.current.click()}
-          src={formData.avatar || currentUser.avatar}
-          alt="profile"
-          className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
-        />
+                <p className="text-sm mt-4 font-medium h-5">
+                  {fileUploadError ? (
+                    <span className="text-red-500">Image upload failed (must be less than 2MB)</span>
+                  ) : filePerc > 0 && filePerc < 100 ? (
+                    <span className="text-emerald-600">Uploading: {filePerc}%</span>
+                  ) : filePerc === 100 ? (
+                    <span className="text-emerald-600">{successMessage}</span>
+                  ) : (
+                    <span className="text-transparent">Placeholder</span>
+                  )}
+                </p>
+              </div>
 
-        <p className="text-sm self-center">
-          {fileUploadError ? (
-            <span className="text-red-700">
-              {" "}
-              Image Upload Error (Must be less than 2MB)
-            </span>
-          ) : filePerc > 0 && filePerc < 100 ? (
-            <span className="text-slate-700">{`Uploading ${filePerc}%`}</span>
-          ) : filePerc === 100 ? (
-            <span className="text-green-700">{successMessage}</span>
-          ) : (
-            ""
-          )}
-        </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                  <input
+                    type="text"
+                    id="username"
+                    defaultValue={currentUser.username}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-gray-50/50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    id="email"
+                    defaultValue={currentUser.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-gray-50/50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    placeholder="Leave blank to keep current"
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-gray-50/50"
+                  />
+                </div>
+              </div>
 
-        <input
-          type="text"
-          placeholder="username"
-          className="border p-3 rounded-lg"
-          id="username"
-          defaultValue={currentUser.username}
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          placeholder="email"
-          className="border p-3 rounded-lg"
-          id="email"
-          defaultValue={currentUser.email}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          className="border p-3 rounded-lg"
-          id="password"
-          defaultValue={currentUser.password}
-          onChange={handleChange}
-        />
+              <div className="flex flex-col gap-3 pt-2">
+                <button
+                  disabled={loading}
+                  className="w-full bg-slate-900 text-white font-medium rounded-xl px-4 py-3.5 hover:bg-slate-800 focus:ring-4 focus:ring-slate-900/10 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loading ? "Updating..." : "Update Profile"}
+                </button>
 
-        <button
-          disabled={loading}
-          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
-        >
-          {loading ? "Loading..." : "Update"}
-        </button>
+                <Link
+                  to="/create-listing"
+                  className="w-full bg-emerald-600 text-white font-medium rounded-xl px-4 py-3.5 text-center hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-600/20 transition-all"
+                >
+                  Create New Listing
+                </Link>
+              </div>
+            </form>
+          </div>
 
-        <Link
-          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95"
-          to={"/create-listing"}
-        >
-          Create Listing
-        </Link>
-      </form>
+          <div className="px-8 py-5 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+            <button
+              onClick={handleDeleteUser}
+              className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+            >
+              Delete Account
+            </button>
+            <button
+              onClick={handleSignOut}
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
 
-      <div className="flex justify-between mt-5">
-        <span
-          onClick={handleDeleteUser}
-          className="text-red-700 cursor-pointer"
-        >
-          Delete Account
-        </span>
-        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
-          Sign Out
-        </span>
+        {/* Notifications */}
+        <div className="text-center font-medium">
+          {error && <p className="text-red-500">{error}</p>}
+          {updateSuccess && <p className="text-emerald-600">Profile updated successfully!</p>}
+          {showListingsError && <p className="text-red-500">Error fetching listings.</p>}
+        </div>
 
-      </div>
+        {/* Show Listings Toggle */}
+        <div className="text-center">
+          <button
+            onClick={handleShowListings}
+            className="text-indigo-600 font-semibold hover:text-indigo-700 transition-colors inline-flex items-center gap-2"
+          >
+            Manage Your Listings
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
 
-      <p className="text-red-700 mt-5">{error ? error : ""}</p>
-      <p className="text-green-700">
-        {updateSuccess ? "User is successfully updated!" : ""}
-      </p>
-      <p className="text-green-700">{successMessage}</p>
-
-      <button className="text-green-700 w-full" onClick={handleShowListings}>
-        Show Listings
-      </button>
-      <p className="text-red-700 mt-5">
-        {showListingsError ? "Error showing listings" : ""}
-      </p>
-
-      {userListings && (
-        <div className="flex flex-col gap-4">
-          <h1 className="text-center mt-7 text-2xl font-semibold">
-            Your Listings
-          </h1>
-          {userListings.length > 0 &&
-            userListings.map((listing) => (
-              <div
+        {/* Listings Section */}
+        {userListings && userListings.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="space-y-4 pt-4"
+          >
+            {userListings.map((listing) => (
+              <motion.div
                 key={listing._id}
-                className="border rounded-lg p-3 flex justify-between items-center gap-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow"
               >
-                <Link to={`/listing/${listing._id}`}>
+                <Link to={`/listing/${listing._id}`} className="shrink-0">
                   <img
                     src={listing.imageUrls[0]}
                     alt="Listing cover"
-                    className="h-16 w-16 object-contain"
+                    className="h-20 w-24 object-cover rounded-lg"
                   />
                 </Link>
-                <Link to={`/listing/${listing._id}`}>
-                  <p className="">{listing.name}</p>
-                </Link>
-
-                <div className="flex flex-col items-center">
+                <div className="flex-1 min-w-0">
+                  <Link to={`/listing/${listing._id}`}>
+                    <h3 className="text-lg font-semibold text-gray-900 truncate hover:text-indigo-600 transition-colors">
+                      {listing.name}
+                    </h3>
+                  </Link>
+                  <p className="text-sm text-gray-500 truncate mt-1">
+                    Listed property
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 shrink-0">
+                  <Link
+                    to={`/update-listing/${listing._id}`}
+                    className="px-3 py-1.5 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors text-center"
+                  >
+                    Edit
+                  </Link>
                   <button
                     onClick={() => handleListingDelete(listing._id)}
-                    className="text-red-700 uppercase"
+                    className="px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
                   >
                     Delete
                   </button>
-                  <Link to={`/update-listing/${listing._id}`}>
-                    <button className="text-green-700 uppercase">Edit</button>
-                  </Link>
                 </div>
-              </div>
+              </motion.div>
             ))}
-            <p className="text-green-700">{successMessage}</p>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </motion.div>
     </div>
   );
 }
