@@ -59,7 +59,7 @@ export default function Home() {
         </div>
 
         {/* Hero Content with Framer Motion */}
-        <div className="relative z-10 w-full max-w-5xl px-4 text-center">
+        <div className="relative z-10 w-full max-w-5xl px-4 text-center mt-16 sm:mt-0 pt-10 sm:pt-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -68,7 +68,7 @@ export default function Home() {
             <span className="inline-block bg-white/10 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-sm font-semibold tracking-widest border border-white/20 mb-6 uppercase">
               Premium Real Estate Network
             </span>
-            <h1 className="text-white font-extrabold text-5xl md:text-6xl lg:text-7xl leading-tight tracking-tight mb-6">
+            <h1 className="text-white font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight tracking-tight mb-6 break-words">
               Discover Exceptionally <br className="hidden md:block" />
               Crafted Properties
             </h1>
@@ -87,11 +87,11 @@ export default function Home() {
             <input
               type="text"
               placeholder="Search by city, neighborhood, or address..."
-              className="flex-1 bg-white/90 text-slate-800 placeholder-slate-500 px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+              className="flex-1 min-w-0 w-full bg-white/90 text-slate-800 placeholder-slate-500 px-6 py-4 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
             />
             <Link
               to="/search"
-              className="business-btn-primary py-4 px-8 sm:w-auto w-full font-bold uppercase tracking-wider text-sm whitespace-nowrap"
+              className="business-btn-primary py-4 px-8 sm:w-auto w-full font-bold uppercase tracking-wider text-sm whitespace-normal text-center"
             >
               Search Portfolio
             </Link>

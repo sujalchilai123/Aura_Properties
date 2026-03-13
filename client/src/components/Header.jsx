@@ -8,6 +8,7 @@ export default function Header() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [searchTerm, setSearchTerm] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -116,12 +117,59 @@ export default function Header() {
               )}
             </Link>
 
-            <button className={`md:hidden p-2 rounded-full hover:bg-white/10 transition-colors ${textColor}`}>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`md:hidden p-2 rounded-full hover:bg-white/10 transition-colors ${textColor}`}
+            >
               <Menu className="w-6 h-6" />
             </button>
           </div>
         </nav>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="absolute top-full left-0 w-full mt-2 px-4 pointer-events-auto md:hidden"
+        >
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200/60 p-5 flex flex-col gap-4">
+            <form
+              onSubmit={(e) => {
+                setIsMobileMenuOpen(false);
+                handleSubmit(e);
+              }}
+              className="bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl flex items-center focus-within:border-emerald-500/50"
+            >
+              <Search className="w-4 h-4 mr-2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search premium locations..."
+                className="bg-transparent focus:outline-none w-full text-sm font-medium text-slate-800 placeholder-slate-400"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </form>
+            <div className="flex flex-col gap-3 text-sm font-bold text-slate-700">
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-3 hover:bg-slate-50 rounded-xl transition-colors text-center"
+              >
+                Portfolio
+              </Link>
+              <Link
+                to="/about"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-3 hover:bg-slate-50 rounded-xl transition-colors text-center"
+              >
+                About Us
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </motion.header>
   );
 }
