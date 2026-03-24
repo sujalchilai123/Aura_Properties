@@ -1,8 +1,8 @@
-# Aura Properties 🏡✨
+# Aura Properties
 
 A modern, comprehensive web application for real estate listings, built on the MERN stack (MongoDB, Express.js, React.js, Node.js). Aura Properties allows users to easily browse, search, and filter premium real estate properties, while providing a sleek, business-ready, and highly responsive user experience. 
 
-## 🚀 Features
+##  Features
 
 - **Modern & Sleek UI:** A fully redesigned, dynamic user interface built with React, Tailwind CSS, and Framer Motion for smooth micro-animations.
 - **Advanced Authentication:** Secure user sign-up, sign-in, and sign-out functionality, featuring both traditional email/password and **Google OAuth** integration via Firebase.
@@ -11,7 +11,7 @@ A modern, comprehensive web application for real estate listings, built on the M
 - **Responsive Layout:** Optimized for all devices—from desktop to mobile—ensuring a seamless browsing experience everywhere.
 - **User Profiles:** Authenticated users can manage their profiles, update their information, and oversee their own property listings.
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 ### Frontend
 - **React.js** (via Vite)
@@ -29,7 +29,7 @@ A modern, comprehensive web application for real estate listings, built on the M
 - **JSON Web Tokens (JWT)** (Secure authentication sessions)
 - **Bcrypt.js** (Password hashing and security)
 
-## 📦 Installation & Setup
+##  Installation & Setup
 
 1. **Clone the repository:**
    ```bash
